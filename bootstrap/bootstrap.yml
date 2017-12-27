@@ -19,15 +19,19 @@
       hostname: name={{ inventory_hostname }}
 
     - name: create user 'ansibler'
-      user: name=ansibler groups=sudo shell=/bin/bash generate_ssh_key=yes 
+      user: name=ansibler groups=sudo password=$6$t0dblcoXAnjcJbt0$4vqcO.Ppts95zVBfCopAkhy5H.2PAu09EEryAKEIhjl9NxjZYt5wa4LEnEhdwxuGjxj3qcb7iaGlUit/JJl4F1 shell=/bin/bash generate_ssh_key=yes 
       register: ansibler
+    
+
+    - debug: var=ansibler
+    - debug: var=groups['all']
 
     - name: add 'ansibler' RSA SSH key
       authorized_key: 
         user: ansibler 
         key: "{{ ansibler.ssh_public_key }}"
-        delegate_to: "{{ item }}"
-        with_items: "{{ groups['all'] }}" 
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['all'] }}" 
 
     - name: change sudoers to contains NOPASSWD for sudo group
       shell: "creates=/etc/sudoers.bak chdir=/etc cp sudoers sudoers.bak && sed -ri -e 's/(%sudo\\s+ALL=\\(ALL:ALL\\))\\s+ALL/\\1 NOPASSWD: ALL/' /etc/sudoers"
