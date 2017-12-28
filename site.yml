@@ -1,0 +1,19 @@
+---
+# Site Configuration
+# ==================
+
+- hosts: cluster 
+  user: ansibler
+  tasks:
+    - name: determinei network interface
+      set_fact: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
+      # eg. to use a eth1: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
+
+- hosts: cluster
+  user: ansibler
+  sudo: true
+  roles:
+    - common
+
+
+
