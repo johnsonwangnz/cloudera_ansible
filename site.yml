@@ -15,5 +15,13 @@
   roles:
     - common
 
+- hosts: all
+  user: ansibler
+  sudo: true
+  roles:
+    - { role: oracle_jdk, when: jdk_installed is not defined }
+
+
+
 
 
