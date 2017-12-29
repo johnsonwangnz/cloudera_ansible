@@ -14,6 +14,9 @@
   sudo: true
   roles:
     - common
+    # ganglia_monitor is not working at moment
+    #- ganglia_monitor
+
 
 - hosts: all
   user: ansibler
@@ -22,6 +25,13 @@
     - { role: oracle_jdk, when: jdk_installed is not defined }
 
 
+
+- hosts: elasticsearch
+  user: ansibler
+  sudo: true
+  roles:
+    - elasticsearch
+    #- elasticsearch_curator
 
 
 
