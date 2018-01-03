@@ -1,0 +1,65 @@
+---
+
+- name: Add Elasticsearch apt key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Logstash repository.
+  apt_repository:
+    repo: 'deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+    state: present
+
+- name: Check if Logstash is already installed.
+  stat: path=/etc/init.d/logstash
+  register: logstash_installed
+  tags: logstash
+
+
+- name: Update apt cache if repository just added.
+  apt: update_cache=yes
+  when: logstash_installed.stat.exists == false
+  tags: logstash
+
+
+- name: Install Logstash.
+  apt: pkg=logstash state=present
+  tags: logstash
+
+- name: Add Logstash user to adm group (Debian). to allow local logs collection
+  user:
+    name: logstash
+    group: logstash
+    groups: adm
+  when: ansible_os_family == "Debian"
+  tags: logstash
+  notify: restart logstash
+
+
+- name: config Logstash to include syslog
+  template: src=05-monitor01-syslog-input.conf dest=/etc/logstash/conf.d/05-monitor01-syslog-input.conf
+  tags: logstash
+  notify:
+    - restart logstash 
+
+- name: config Logstash to output to Elasticsearch
+  template: src=30-elasticsearch-output.conf dest=/etc/logstash/conf.d/30-elasticsearch-output.conf
+  tags: logstash
+  notify:
+    - restart logstash
+
+
+
+#- name: config Logstash to include syslog
+#  template: src=05-monitor01-syslog-input.conf dest=/etc/logstash/conf.d/05-monitor01-syslog-input.conf
+#  tags: logstash
+#  notify:
+#    - restart logstash
+
+
+
+
+- name: make sure logstash is enabled and started
+  service: name=logstash enabled=yes state=started
+  tags: logstash
+

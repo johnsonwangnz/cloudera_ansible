@@ -33,5 +33,18 @@
     - elasticsearch
     #- elasticsearch_curator
 
+- hosts: kibana
+  user: ansibler
+  sudo: true
+  roles:
+    - kibana
+
+- hosts: logstash
+  user: ansibler
+  sudo: true
+  roles:
+    - logstash
+
+
 
 

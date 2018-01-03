@@ -1,0 +1,51 @@
+---
+
+# ======== Kibana ===========
+
+- name: Install Kibana.
+  shell: creates=/usr/share/kibana/bin/kibana chdir=/tmp wget https://artifacts.elastic.co/downloads/kibana/kibana-6.1.1-amd64.deb && dpkg -i kibana-6.1.1-amd64.deb 
+  tags: kibana
+
+
+#- name: Updateing the config file to allow outside access
+#  lineinfile:
+#    desfile: /etc/kibana/kibana.yml
+#    regexp: 'server.host:'
+#    line: 'server.host: 0.0.0.0'
+
+#- name: Defining server port
+#  lineinfile:
+#    destfile: /etc/kibana/kibana.yml
+#    regexp: 'server.port:'
+#    line: 'server.port: 5601'
+    
+#- name: Defining Elasticsearch URL
+#  lineinfile:
+#    destfile: /etc/kibana/kibana.yml
+#    regexp: 'elasticsearch.url:'
+#    line: 'elasticsearch.url: "http://{{hostvars[elasticsearch][0]}}:9200"'
+#  notify:
+#    - restart kibana
+
+- name: config Kibana
+  template: src=kibana.yml dest=/etc/kibana/kibana.yml
+  tags: kibana
+  notify:
+    - restart kibana 
+
+- name: Add kibana user to adm group (Debian). to allow local logs 
+  user:
+    name: kibana
+    group: kibana
+    groups: adm
+  when: ansible_os_family == "Debian"
+  tags: kibana
+  notify: restart kibana
+
+
+
+#- name: make sure kibana is enabled and started
+#  systemd: name=kibana enabled=yes state=started
+#  tags: kibana
+
+
