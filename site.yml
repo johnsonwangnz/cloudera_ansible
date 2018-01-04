@@ -61,4 +61,10 @@
     #- cdh_hadoop_config
 
 
+- hosts: zookeepers
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_zookeeper
+
 
