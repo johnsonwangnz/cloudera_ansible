@@ -1,0 +1,11 @@
+---
+
+- name: restart td-agent
+  command: /etc/init.d/td-agent restart
+
+- name: restart rsyslog
+  service: name=rsyslog state=restarted
+
+- name: log installation message
+  command: logger -t ansible "Configured rsyslog integration with Fluentd on {{ ansible_fqdn }}"
+

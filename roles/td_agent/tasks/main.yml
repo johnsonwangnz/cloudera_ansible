@@ -1,0 +1,43 @@
+---
+
+- name: Install td-agent
+  shell: creates=/etc/init.d/td-agent curl -L https://toolbelt.treasuredata.com/sh/install-ubuntu-xenial-td-agent2.sh | sh
+
+# GEM installed on:
+#   /opt/td-agent/embedded/lib/ruby/gems/2.1.0/gems/
+#   executable is /opt/td-agent/embedded/bin/fluent-gem
+
+- name: install fluentd plugins, if any
+  gem:
+      name: "{{ item }}"
+      executable: /opt/td-agent/embedded/bin/fluent-gem
+      state: latest
+      user_install: no
+  with_items: 
+    - fluent-plugin-elasticsearch 
+  notify:
+    - restart td-agent
+
+- name: configure fluentd in /etc/rsyslog.d/
+  template: src={{ item }} dest=/etc/rsyslog.d/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - 99-rsyslog-fluentd.conf
+  tags:
+    - rsyslog
+    - fluentd
+  notify:
+    - restart rsyslog
+    - log installation message
+
+
+
+- name: configure td-agent in /etc/td-agent/td-agent.conf
+  template: src=td-agent.conf dest=/etc/td-agent/td-agent.conf owner=root group=root mode=0644
+  tags:
+    - tdagent
+    - configuration
+  notify:
+    - restart td-agent
+
+
+

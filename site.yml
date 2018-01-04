@@ -46,5 +46,12 @@
     - logstash
 
 
+- hosts: all
+  user: ansibler
+  sudo: true
+  roles:
+    - td_agent
+
+
 
 
