@@ -1,0 +1,23 @@
+---
+# file: roles/cdh_common/tasks/main.yml
+
+- name: add Cloudera CDH5 repository
+  shell: creates=/etc/apt/sources.list.d/cloudera.list wget 'https://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh/cloudera.list' -O /etc/apt/sources.list.d/cloudera.list
+  tags:
+    - hadoop
+    - hbase
+    - hive
+
+- name: Run apt-get update after adding cdh5 repo
+  apt:
+    update_cache: yes
+
+
+- name: add Cloudera CDH5 key
+  apt_key: url=https://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh/archive.key 
+  tags:
+    - hadoop
+    - hbase
+    - hive
+
+

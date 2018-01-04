@@ -52,6 +52,13 @@
   roles:
     - td_agent
 
+# Hadoop
+- hosts: hdnodes
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_common
+    #- cdh_hadoop_config
 
 
 

@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: oracle_jdk, when: jdk_installed is not defined }
+
