@@ -67,4 +67,10 @@
   roles:
     - cdh_zookeeper
 
+- hosts: resourcemanager
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_yarn_resourcemanager
+
 
