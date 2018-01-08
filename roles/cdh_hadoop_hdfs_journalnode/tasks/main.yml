@@ -7,13 +7,14 @@
 
 # this is for local journalnode daemon
 
+- name: install hadoop-hdfs-journalnode via apt
+  apt: name=hadoop-hdfs-journalnode
+  tags: hadoop
+
 - name: create the /data/dfs/jn directory
   file: path=/data/dfs/jn owner=hdfs group=hdfs state=directory
   tags: hadoop
 
-- name: install hadoop-hdfs-journalnode via apt
-  apt: name=hadoop-hdfs-journalnode
-  tags: hadoop
 
 # journal nodes configuration is in hdfs-site.xml
 

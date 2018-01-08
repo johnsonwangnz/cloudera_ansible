@@ -9,6 +9,8 @@
       set_fact: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
       # eg. to use a eth1: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
 
+# cluster cross cutting components
+
 - hosts: cluster
   user: ansibler
   sudo: true
@@ -53,12 +55,14 @@
     - td_agent
 
 # Hadoop
+
+# Add cdh repo and key
+
 - hosts: hdnodes
   user: ansibler
   sudo: true
   roles:
     - cdh_common
-    #- cdh_hadoop_config
 
 
 - hosts: zookeepers
@@ -71,7 +75,7 @@
   user: ansibler
   sudo: true
   roles:
-    - cdh_hadoop_hdfs_journalnodes
+    - cdh_hadoop_hdfs_journalnode
 
 - hosts: resourcemanager
   user: ansibler
@@ -111,4 +115,11 @@
   roles:
     - cdh_hadoop_mapreduce_historyserver
     - cdh_hadoop_yarn_proxyserver
+
+# config all components 
+- hosts: hdnodes
+  user: ansibler
+  sudo: true
+  roles:
+    #- cdh_hadoop_config
 

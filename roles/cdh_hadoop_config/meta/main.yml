@@ -1,0 +1,4 @@
+---
+dependencies:
+  - cdh_hadoop_common
+
