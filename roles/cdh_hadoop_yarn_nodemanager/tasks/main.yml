@@ -1,6 +1,11 @@
 ---
 # file: roles/cdh_hadoop_yarn_nodemanager/tasks/main.yml
 
+
+- name: install hadoop-yarn-nodemanager via apt
+  apt: name=hadoop-yarn-nodemanager
+  tags: hadoop
+
 - name: create the /data/yarn/local directory
   file: path=/data/yarn/local owner=yarn group=yarn state=directory
   tags: hadoop
@@ -9,7 +14,4 @@
   file: path=/data/yarn/logs owner=yarn group=yarn state=directory
   tags: hadoop
 
-- name: install hadoop-yarn-nodemanager via apt
-  apt: name=hadoop-yarn-nodemanager
-  tags: hadoop
 

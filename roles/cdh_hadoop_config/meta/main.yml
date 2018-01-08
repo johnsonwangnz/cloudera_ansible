@@ -1,4 +1,5 @@
 ---
+# if there is any other packages to run, put them here
 dependencies:
-  - cdh_hadoop_common
+  #- cdh_hadoop_common
 

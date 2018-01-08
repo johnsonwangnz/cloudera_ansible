@@ -1,6 +1,8 @@
 ---
 # file: roles/cdh_hadoop_config/tasks/main.yml
 
+#this is performing step: Copying the Hadoop Configuration and Setting Alternatives
+
 # site_name is defined in group_vars
 
 - name: copy /etc/hadoop/conf.empty to /etc/hadoop/conf.{{ site_name|lower }}
@@ -9,40 +11,8 @@
     - hadoop
     - configuration
 
-- name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
-  template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
-  with_items:
-    - core-site.xml
-    - hadoop-env.sh
-    - hadoop-metrics2.properties
-    - hdfs-site.xml
-   # - org-xerial-snappy.properties
-    - slaves
-    - mapred-site.xml
-    - yarn-site.xml
-   # - fair-scheduler.xml
-  notify:
-    - restart hadoop-hdfs-namenode
-    - restart hadoop-hdfs-journalnode
-    - restart hadoop-hdfs-datanode
-    - restart hadoop-mapreduce-historyserver
-    - restart hadoop-yarn-nodemanager
-    - restart hadoop-yarn-resourcemanager
-  tags:
-    - hadoop
-    - configuration
 
-
-
-- name: update excluded datanodes
-  copy: src=dfs.hosts.exclude dest=/etc/hadoop/conf/dfs.hosts.exclude owner=root group=root mode=644
-  notify:
-    - refresh datanodes
-  tags:
-    - hadoop
-    - configuration
-
-# this is using update-alternatives poiting /etc/hadoop/conf to a customized folder which is /etc/hadoop/conf.site_name
+# this is using update-alternatives poiting /etc/hadoop/conf to a customized folder which is /etc/hadoop/conf.site_name as required by cdh
 
 - name: run 'update-alternatives' to install hadoop configuration
   command: update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.{{ site_name|lower }} 50
@@ -51,6 +21,41 @@
 - name: run 'update-alternatives' to set hadoop configuration
   command: update-alternatives --set hadoop-conf /etc/hadoop/conf.{{ site_name|lower }}
   tags: hadoop
+
+
+#- name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
+#  template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
+#  with_items:
+   # - core-site.xml
+   # - hadoop-env.sh
+   # - hadoop-metrics2.properties
+   # - hdfs-site.xml
+   # - org-xerial-snappy.properties
+   # - slaves
+   # - mapred-site.xml
+   # - yarn-site.xml
+   # - fair-scheduler.xml
+#  notify:
+    #- restart hadoop-hdfs-namenode
+    #- restart hadoop-hdfs-journalnode
+    #- restart hadoop-hdfs-datanode
+    #- restart hadoop-mapreduce-historyserver
+    #- restart hadoop-yarn-nodemanager
+    #- restart hadoop-yarn-resourcemanager
+#  tags:
+#    - hadoop
+#    - configuration
+
+
+
+#- name: update excluded datanodes
+#  copy: src=dfs.hosts.exclude dest=/etc/hadoop/conf/dfs.hosts.exclude owner=root group=root mode=644
+#  notify:
+#    - refresh datanodes
+#  tags:
+#    - hadoop
+#    - configuration
+
 
 
 

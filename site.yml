@@ -116,10 +116,12 @@
     - cdh_hadoop_mapreduce_historyserver
     - cdh_hadoop_yarn_proxyserver
 
-# config all components 
+# config all hadoop components 
 - hosts: hdnodes
   user: ansibler
   sudo: true
   roles:
-    #- cdh_hadoop_config
+    - cdh_hadoop_config
+
+
 
