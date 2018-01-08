@@ -67,10 +67,48 @@
   roles:
     - cdh_zookeeper
 
+- hosts: journalnodes
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_hdfs_journalnodes
+
 - hosts: resourcemanager
   user: ansibler
   sudo: true
   roles:
     - cdh_hadoop_yarn_resourcemanager
 
+- hosts: namenodes
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_hdfs_namenode
+    - cdh_hadoop_hdfs_zkfc
+
+- hosts: nodemanagers
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_yarn_nodemanager
+
+
+- hosts: datanodes
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_hdfs_datanode
+
+- hosts: nodemanagers
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_mapreduce
+
+- hosts: historyserver
+  user: ansibler
+  sudo: true
+  roles:
+    - cdh_hadoop_mapreduce_historyserver
+    - cdh_hadoop_yarn_proxyserver
 

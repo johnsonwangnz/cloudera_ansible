@@ -1,0 +1,6 @@
+---
+
+- name: install hadoop-mapreduce via apt
+  apt: name=hadoop-mapreduce
+  tags: hadoop
+
