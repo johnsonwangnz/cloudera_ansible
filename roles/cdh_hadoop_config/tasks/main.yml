@@ -23,10 +23,10 @@
   tags: hadoop
 
 
-#- name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
-#  template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
-#  with_items:
-   # - core-site.xml
+- name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
+  template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
+  with_items:
+    - core-site.xml
    # - hadoop-env.sh
    # - hadoop-metrics2.properties
    # - hdfs-site.xml
@@ -42,9 +42,9 @@
     #- restart hadoop-mapreduce-historyserver
     #- restart hadoop-yarn-nodemanager
     #- restart hadoop-yarn-resourcemanager
-#  tags:
-#    - hadoop
-#    - configuration
+  tags:
+    - hadoop
+    - configuration
 
 
 
