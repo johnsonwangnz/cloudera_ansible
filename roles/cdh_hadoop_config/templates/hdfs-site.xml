@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- {{ ansible_managed }} -->
+
+<configuration>
+   <property>
+       <name>dfs.hosts.exclude</name>
+       <value>/etc/hadoop/conf/dfs.hosts.exclude</value>
+    </property>
+
+    <!--HA mode-->
+    <!--HA config, dfs.nameservices, use the logic name of NameService -->
+    <property>
+        <name>dfs.nameservices</name>
+        <value>{{ site_name|lower }}</value>
+    </property>
+
+     <!--HA config, dfs.ha.namenodes.[nameservice ID], comma separated NameNode IDs-->
+     <property>
+        <name>dfs.ha.namenodes.{{ site_name|lower }}</name>
+        <value>{% for host in groups['namenodes'] %}nn{{ loop.index }}{% if not loop.last %},{% endif %}{% endfor %}</value>
+    </property>
+
+     <!--HA config, dfs.ha.namenode.rpc-address.[nameservice ID].[namenode ID], the fully qualified RPC address for each namdenode to listen on-->
+
+    {% for host in groups['namenodes'] %}
+    <property>
+        <name>dfs.namenode.rpc-address.{{ site_name|lower }}.nn{{ loop.index }}</name>
+        <value>{{ hostvars[host].ipv4_address|default(hostvars[host]['ansible_default_ipv4']['address']) }}:8020</value>
+    </property>
+    {% endfor %}
+
+     <!--HA config, dfs.ha.namenode.http-address.[nameservice ID].[namenode ID], the fully qualified HTTP address for each namdenode to listen on-->
+
+   {% for host in groups['namenodes'] %}
+    <property>
+        <name>dfs.namenode.http-address.{{ site_name|lower }}.nn{{ loop.index }}</name>
+        <value>{{ hostvars[host].ipv4_address|default(hostvars[host]['ansible_default_ipv4']['address']) }}:50070</value>
+    </property>
+    {% endfor %}
+
+    <!--HA config, dfs.namenode.shared.edits.dir, the location of the shared storage directory
+
+qjournal://<host1:port1>;<host2:port2>;<host3:port3>/<journalId>
+
+on all journalnodes,
+8485 is default port for JournalNode
+NameService Id for journal id 
+-->
+    <property>
+        <name>dfs.namenode.shared.edits.dir</name>
+        <value>qjournal://{% for host in groups['journalnodes'] %}{{ hostvars[host].ipv4_address|default(hostvars[host]['ansible_default_ipv4']['address']) }}:8485{% if not loop.last %};{% endif %}{% endfor %}/{{ site_name|lower }}</value>
+    </property>
+
+    <!--HA config, dfs.journalnode.edits.dir, journal node local state storage path-->
+
+    <property>
+        <name>dfs.journalnode.edits.dir</name>
+        <value>/data/dfs/jn</value>
+    </property>
+
+    <!--HA config, dfs.client.failover.proxy.provider.[nameservice ID] - the Java class that HDFS clients use to contact the Active NameNode, The only implementation which currently ships with Hadoop is the ConfiguredFailoverProxyProvider-->
+   <property>
+        <name>dfs.client.failover.proxy.provider.{{ site_name|lower }}</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+
+    <!--HA config, fencing configuration, dfs.ha.fencing.method, as we use Quorum, only one namenode is allowed to write, therefore use default value shell true-->
+   <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>shell(/bin/true)</value>
+    </property>
+
+    <!--HA config, automatic failover, -->
+
+   <property>
+        <name>dfs.ha.automatic-failover.enabled</name>
+        <value>true</value>
+    </property>
+
+    <!--HA config, automatic failover, zookeeper services -->
+
+    <property>
+        <name>ha.zookeeper.quorum</name>
+        <value>{% for host in groups['zookeepers'] %}{{ hostvars[host].ipv4_address|default(hostvars[host]['ansible_default_ipv4']['address']) }}{% if not loop.last %},{% endif %}{% endfor %}</value>
+    </property>
+
+    <!--end of HA config-->
+
+    <!--Configuring Local Storage Directories namenodes-->
+    <property>
+        <name>dfs.name.dir</name>
+        <value>file:///data/dfs/nn</value>
+    </property>
+
+    <!--Configuring Local Storage Directories datanodes-->
+    <property>
+         <name>dfs.data.dir</name>
+         <value>file:///data/dfs/dn</value>
+     </property>
+
+    <!-- Replication factor -->
+    <property>
+        <name>dfs.replication</name>
+        <value>3</value>
+        <final>true</final>
+    </property>
+
+    <property>
+        <name>dfs.blocksize</name>
+        <value>{{ dfs_blocksize }}</value>
+        <final>true</final>
+    </property>
+
+    <property>
+        <name>dfs.datanode.max.xcievers</name>
+        <value>{{ max_xcievers }}</value>
+        <final>true</final>
+    </property>
+
+
+</configuration>
+
+

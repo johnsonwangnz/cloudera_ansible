@@ -28,6 +28,16 @@
         	<final>true</final>
     	</property>
 
+        <!--ebabke proxying for mapred user-->
+        <property>
+                <name>hadoop.proxyuser.mapred.groups</name>
+                <value>*</value>
+        </property>
+
+        <property>
+                <name>hadoop.proxyuser.mapred.hosts</name>
+                <value>*</value>
+        </property>
 
 </configuration>
 

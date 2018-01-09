@@ -27,21 +27,21 @@
   template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
   with_items:
     - core-site.xml
-   # - hadoop-env.sh
+    - hadoop-env.sh
    # - hadoop-metrics2.properties
-   # - hdfs-site.xml
+    - hdfs-site.xml
    # - org-xerial-snappy.properties
-   # - slaves
-   # - mapred-site.xml
-   # - yarn-site.xml
-   # - fair-scheduler.xml
-#  notify:
-    #- restart hadoop-hdfs-namenode
-    #- restart hadoop-hdfs-journalnode
-    #- restart hadoop-hdfs-datanode
-    #- restart hadoop-mapreduce-historyserver
-    #- restart hadoop-yarn-nodemanager
-    #- restart hadoop-yarn-resourcemanager
+    - slaves
+    - mapred-site.xml
+    - yarn-site.xml
+    - fair-scheduler.xml
+  #notify:
+  #  - restart hadoop-hdfs-namenode
+  #  - restart hadoop-hdfs-journalnode
+  #  - restart hadoop-hdfs-datanode
+  #  - restart hadoop-mapreduce-historyserver
+  #  - restart hadoop-yarn-nodemanager
+  #  - restart hadoop-yarn-resourcemanager
   tags:
     - hadoop
     - configuration
