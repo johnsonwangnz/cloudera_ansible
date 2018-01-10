@@ -123,5 +123,85 @@
   roles:
     - cdh_hadoop_config
 
+# create /data folder and format name node 
+
+- hosts: primarynamenode
+  user: ansibler
+  sudo: true
+  sudo_user: hdfs
+  tasks:
+    - name: create the /data/dfs/nn directory
+      file: path=/data/dfs/nn owner=hdfs group=hdfs state=directory
+      tags:
+        - hadoop
+        - hbase
+        - hive
+    - name: format the namenode - WILL NOT FORMAT IF /data/dfs/nn/current/VERSION EXISTS TO AVOID DATA LOSS
+      command: creates=/data/dfs/nn/current/VERSION hdfs namenode -format -force
+      tags:
+        - hadoop
+        - hbase
+        - hive
+#    - name: restart namenode 
+#      service: name=hadoop-hdfs-namenode state=restarted
+#      tags:
+#        - hadoop
+#        - hbase
+#        - hive
+
+
+# create /data folder on second namenode and format it with bootstrapStandby
+
+- hosts: backupnamenode
+  user: ansibler
+  sudo: true
+  sudo_user: hdfs
+  tasks:
+    - name: output the first namenode address
+      debug: msg={{ hostvars[groups['primarynamenode'][0]].ipv4_address|default(hostvars[groups['primarynamenode'][0]].ansible_default_ipv4.address) }} 
+
+    - name: wait for the first namenode to come online
+      wait_for: host={{ hostvars[groups['primarynamenode'][0]].ipv4_address|default(hostvars[groups['primarynamenode'][0]].ansible_default_ipv4.address) }} port=50070
+      tags:
+        - hadoop
+        - hbase
+        - hive
+    - name: create the /data/dfs/nn directory
+      file: path=/data/dfs/nn owner=hdfs group=hdfs state=directory
+      tags:
+        - hadoop
+        - hbase
+        - hive
+    - name: bootstrap the standby namenode
+      shell: creates=/data/dfs/nn/.bootstrapped hdfs namenode -bootstrapStandby && touch /data/dfs/nn/.bootstrapped
+      tags:
+        - hadoop
+        - hbase
+        - hive
+
+# primary namenode creates zookeeper folder, start failover controller and restart namenodes
+
+- hosts: primarynamenode
+  user: ansibler
+  sudo: true
+  tasks:
+    - name: format hadoop-hdfs-zkfc
+      shell: creates=/data/dfs/.zkfsformatted hdfs zkfc -formatZK -force && touch /data/dfs/.zkfsformatted
+      tags:
+        - hadoop
+        - hbase
+        - hive
+    - name: start zkfc
+      service: name=hadoop-hdfs-zkfc state=restarted
+      tags:
+        - hadoop
+        - hbase
+        - hive
+    - name: restart namenode
+      service: name=hadoop-hdfs-namenode state=restarted
+      tags:
+        - hadoop
+        - hbase
+        - hive
 
 

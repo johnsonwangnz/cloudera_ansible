@@ -35,26 +35,26 @@
     - mapred-site.xml
     - yarn-site.xml
     - fair-scheduler.xml
-  #notify:
-  #  - restart hadoop-hdfs-namenode
-  #  - restart hadoop-hdfs-journalnode
-  #  - restart hadoop-hdfs-datanode
-  #  - restart hadoop-mapreduce-historyserver
-  #  - restart hadoop-yarn-nodemanager
-  #  - restart hadoop-yarn-resourcemanager
+  notify:
+    - restart hadoop-hdfs-namenode
+    - restart hadoop-hdfs-journalnode
+    - restart hadoop-hdfs-datanode
+    - restart hadoop-mapreduce-historyserver
+    - restart hadoop-yarn-nodemanager
+    - restart hadoop-yarn-resourcemanager
   tags:
     - hadoop
     - configuration
 
 
 
-#- name: update excluded datanodes
-#  copy: src=dfs.hosts.exclude dest=/etc/hadoop/conf/dfs.hosts.exclude owner=root group=root mode=644
-#  notify:
-#    - refresh datanodes
-#  tags:
-#    - hadoop
-#    - configuration
+- name: update excluded datanodes
+  copy: src=dfs.hosts.exclude dest=/etc/hadoop/conf/dfs.hosts.exclude owner=root group=root mode=644
+  notify:
+    - refresh datanodes
+  tags:
+    - hadoop
+    - configuration
 
 
 
