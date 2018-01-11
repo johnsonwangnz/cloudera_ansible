@@ -57,6 +57,11 @@
      </property>
 
      <property>
+         <name>yarn.resourcemanager.hostname</name>
+         <value>{{ hostvars[groups['resourcemanager'][0]]['ansible_fqdn'] }}</value>
+     </property>   
+
+     <property>
          <name>yarn.log-aggregation-enable</name>
          <value>true</value>
      </property>
@@ -92,6 +97,29 @@
         </value>
      </property>
 
+
+     <!-- Fair scheduling is a method of assigning resources to jobs such that all jobs get, on average, an equal
+    share of resources over time. When there is a single job running, that job uses the entire cluster. -->
+     <property>
+         <name>yarn.resourcemanager.scheduler.class</name>
+         <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.fair.FairScheduler</value>
+     </property>
+
+     <!--Yarn multilhomed network-->
+     <property>
+         <name>yarn.resourcemanager.bind-host</name>
+	 <value>0.0.0.0</value>
+     </property>
+
+     <property>
+         <name>yarn.nodemanager.bind-host</name>
+         <value>0.0.0.0</value>
+     </property>
+
+     <property>
+         <name>yarn.timeline-service.bind-host</name>
+         <value>0.0.0.0</value>
+     </property>
 
 
 </configuration>

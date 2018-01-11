@@ -13,7 +13,7 @@
 
 - hosts: cluster
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - common
     # ganglia_monitor is not working at moment
@@ -22,7 +22,7 @@
 
 - hosts: all
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - { role: oracle_jdk, when: jdk_installed is not defined }
 
@@ -30,27 +30,27 @@
 
 - hosts: elasticsearch
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - elasticsearch
     #- elasticsearch_curator
 
 - hosts: kibana
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - kibana
 
 - hosts: logstash
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - logstash
 
 
 - hosts: all
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - td_agent
 
@@ -60,58 +60,58 @@
 
 - hosts: hdnodes
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_common
 
 
 - hosts: zookeepers
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_zookeeper
 
 - hosts: journalnodes
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_hdfs_journalnode
 
 - hosts: resourcemanager
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_yarn_resourcemanager
 
 - hosts: namenodes
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_hdfs_namenode
     - cdh_hadoop_hdfs_zkfc
 
 - hosts: nodemanagers
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_yarn_nodemanager
 
 
 - hosts: datanodes
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_hdfs_datanode
 
 - hosts: nodemanagers
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_mapreduce
 
 - hosts: historyserver
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_mapreduce_historyserver
     - cdh_hadoop_yarn_proxyserver
@@ -119,7 +119,7 @@
 # config all hadoop components 
 - hosts: hdnodes
   user: ansibler
-  sudo: true
+  become: true
   roles:
     - cdh_hadoop_config
 
@@ -127,8 +127,8 @@
 
 - hosts: primarynamenode
   user: ansibler
-  sudo: true
-  sudo_user: hdfs
+  become: true
+  become_user: hdfs
   tasks:
     - name: create the /data/dfs/nn directory
       file: path=/data/dfs/nn owner=hdfs group=hdfs state=directory
@@ -142,20 +142,14 @@
         - hadoop
         - hbase
         - hive
-#    - name: restart namenode 
-#      service: name=hadoop-hdfs-namenode state=restarted
-#      tags:
-#        - hadoop
-#        - hbase
-#        - hive
 
 
 # create /data folder on second namenode and format it with bootstrapStandby
 
 - hosts: backupnamenode
   user: ansibler
-  sudo: true
-  sudo_user: hdfs
+  become: true
+  become_user: hdfs
   tasks:
     - name: output the first namenode address
       debug: msg={{ hostvars[groups['primarynamenode'][0]].ipv4_address|default(hostvars[groups['primarynamenode'][0]].ansible_default_ipv4.address) }} 
@@ -183,7 +177,7 @@
 
 - hosts: primarynamenode
   user: ansibler
-  sudo: true
+  become: true
   tasks:
     - name: format hadoop-hdfs-zkfc
       shell: creates=/data/dfs/.zkfsformatted hdfs zkfc -formatZK -force && touch /data/dfs/.zkfsformatted
@@ -204,82 +198,6 @@
         - hbase
         - hive
 
-# restart all services
-
-- hosts: journalnodes
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-hdfs-journalnode on journalnodes
-      service: name=hadoop-hdfs-journalnode state=restarted
-  tags:
-    - restartallservices
-
-- hosts: primarynamenode
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-hdfs-namenode on primary namenode
-      service: name=hadoop-hdfs-namenode state=restarted
-    - name: restart zkfc on primary namenode 
-      service: name=hadoop-hdfs-zkfc state=restarted
-  tags:
-    - restartallservices
-
-- hosts: backupnamenode
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-hdfs-namenode on backup namenode
-      service: name=hadoop-hdfs-namenode state=restarted
-    - name: restart zkfc on backup namenode
-      service: name=hadoop-hdfs-zkfc state=restarted
-  tags:
-    - restartallservices
-
-- hosts: datanodes
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-hdfs-datanode on all datanodes
-      service: name=hadoop-hdfs-datanode state=restarted
-  tags:
-    - restartallservices
-
-- hosts: historyserver
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-mapreduce-historyserver on history server
-      service: name=hadoop-mapreduce-historyserver state=restarted
-  tags:
-    - restartallservices
-
-- hosts: resourcemanager
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-yarn-resourcemanager on resourcemanager
-      service: name=hadoop-yarn-resourcemanager state=restarted
-  tags:
-    - restartallservices
 
 
-- hosts: nodemanagers
-  user: ansibler
-  sudo: true
-  tasks:
-    - name: restart hadoop-yarn-nodemanager on all node managers
-      service: name=hadoop-yarn-nodemanager state=restarted
-  tags:
-    - restartallservices
-
-
-- hosts: datanodes
-  user: hdfs
-  tasks:
-    - name: refresh datanodes
-      command: hdfs dfsadmin -refreshNodes
-  tags:
-    - restartallservices
 

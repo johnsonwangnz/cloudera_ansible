@@ -1,0 +1,94 @@
+---
+# Restart Hadoop services Configuration
+# ==================
+
+- hosts: journalnodes
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-hdfs-journalnode on journalnodes
+      service: name=hadoop-hdfs-journalnode state=restarted
+  tags:
+    - restartallservices
+
+- hosts: primarynamenode
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-hdfs-namenode on primary namenode
+      service: name=hadoop-hdfs-namenode state=restarted
+    - name: restart zkfc on primary namenode 
+      service: name=hadoop-hdfs-zkfc state=restarted
+  tags:
+    - restartallservices
+
+- hosts: backupnamenode
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-hdfs-namenode on backup namenode
+      service: name=hadoop-hdfs-namenode state=restarted
+    - name: restart zkfc on backup namenode
+      service: name=hadoop-hdfs-zkfc state=restarted
+  tags:
+    - restartallservices
+
+- hosts: datanodes
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-hdfs-datanode on all datanodes
+      service: name=hadoop-hdfs-datanode state=restarted
+  tags:
+    - restartallservices
+
+- hosts: historyserver
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-mapreduce-historyserver on history server
+      service: name=hadoop-mapreduce-historyserver state=restarted
+  tags:
+    - restartallservices
+
+- hosts: resourcemanager
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-yarn-resourcemanager on resourcemanager
+      service: name=hadoop-yarn-resourcemanager state=restarted
+  tags:
+    - restartallservices
+
+
+- hosts: nodemanagers
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-yarn-nodemanager on all node managers
+      service: name=hadoop-yarn-nodemanager state=restarted
+  tags:
+    - restartallservices
+
+# do not start it, once it is started,yarn web app seems not working
+- hosts: historyserver
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-yarn-proxyserver on history server
+      service: name=hadoop-yarn-proxyserver state=restarted
+  tags:
+    - restartallservices
+
+
+- hosts: datanodes
+  user: ansibler
+  become: true
+  become_user: hdfs
+  tasks:
+    - name: refresh datanodes
+      command: hdfs dfsadmin -refreshNodes
+  tags:
+    - restartallservices
+
+

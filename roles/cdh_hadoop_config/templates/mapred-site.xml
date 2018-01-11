@@ -56,10 +56,18 @@
         <name>mapreduce.jobhistory.webapp.address</name>
         <value>{{ hostvars[groups['historyserver'][0]]['ansible_fqdn'] }}:19888</value>
     </property>
-
+    <!-- this seems to conflict with main resourcemanager port -->
     <property>
         <name>yarn.web-proxy.address</name>
-        <value>{{ hostvars[groups['resourcemanager'][0]]['ansible_fqdn'] }}:8088</value>
+        <value>{{ hostvars[groups['resourcemanager'][0]]['ansible_fqdn'] }}:8089</value>
+    </property>
+    
+
+    <!-- Yarn multihomed network-->
+
+    <property>
+	<name>mapreduce.jobhistory.bind-host</name>
+	<value>0.0.0.0</value>
     </property>
 
 </configuration>

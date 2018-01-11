@@ -22,6 +22,9 @@
   command: update-alternatives --set hadoop-conf /etc/hadoop/conf.{{ site_name|lower }}
   tags: hadoop
 
+- name: create gc log file  /var/log/hadoop-hdfs/hadoop-hdfs-gc.log
+  file: path=/var/log/hadoop-hdfs/hadoop-hdfs-gc.log owner=root group=root mode=0755 
+  tags: hadoop
 
 - name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
   template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644

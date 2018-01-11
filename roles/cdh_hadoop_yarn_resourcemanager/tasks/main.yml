@@ -5,3 +5,8 @@
   apt: name=hadoop-yarn-resourcemanager
   tags: hadoop
 
+- name: configure rsyslog for hadoop-yarn-resourcemanager
+  template: src=rsyslog.conf dest=/etc/rsyslog.d/60-hadoop-yarn-resourcemanager.conf owner=root group=root mode=0644
+  tags: rsyslog
+  notify:
+    - restart rsyslog

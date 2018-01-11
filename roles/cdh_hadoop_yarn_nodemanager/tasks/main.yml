@@ -14,4 +14,8 @@
   file: path=/data/yarn/logs owner=yarn group=yarn state=directory
   tags: hadoop
 
-
+- name: configure rsyslog for hadoop-yarn-nodemanager
+  template: src=rsyslog.conf dest=/etc/rsyslog.d/60-hadoop-yarn-nodemanager.conf owner=root group=root mode=0644
+  tags: rsyslog
+  notify:
+    - restart rsyslog

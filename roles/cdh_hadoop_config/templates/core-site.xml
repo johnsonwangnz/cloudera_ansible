@@ -28,7 +28,7 @@
         	<final>true</final>
     	</property>
 
-        <!--ebabke proxying for mapred user-->
+        <!--enable proxying for mapred user-->
         <property>
                 <name>hadoop.proxyuser.mapred.groups</name>
                 <value>*</value>
