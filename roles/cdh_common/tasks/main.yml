@@ -1,6 +1,13 @@
 ---
 # file: roles/cdh_common/tasks/main.yml
 
+- name: remove 127.0.0.1 hostname line from /etc/hosts which causes connection issues in hadoop
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.0\.1.*{{ ansible_fqdn }}'
+    state: absent
+
+
 - name: add Cloudera CDH5 repository
   shell: creates=/etc/apt/sources.list.d/cloudera.list wget 'https://archive.cloudera.com/cdh5/ubuntu/xenial/amd64/cdh/cloudera.list' -O /etc/apt/sources.list.d/cloudera.list
   tags:

@@ -3,5 +3,36 @@
 <!-- {{ ansible_managed }} -->
 
 <allocations>
+   <queue name="root">
+        <weight>1.0</weight>
+        <schedulingPolicy>drf</schedulingPolicy>
+        <aclSubmitApps> </aclSubmitApps>
+        <aclAdministerApps>*</aclAdministerApps>
+        <queue name="production">
+            <minResources>1024 mb, 10 vcores</minResources>
+            <maxResources>5120 mb, 20 vcores</maxResources>
+            <weight>4.0</weight>
+            <schedulingPolicy>drf</schedulingPolicy>
+            <aclSubmitApps>*</aclSubmitApps>
+            <aclAdministerApps>*</aclAdministerApps>
+        </queue>
+        <queue name="development">
+            <weight>1.0</weight>
+            <schedulingPolicy>drf</schedulingPolicy>
+            <aclSubmitApps>*</aclSubmitApps>
+            <aclAdministerApps>*</aclAdministerApps>
+        </queue>
+        <queue name="hdfs">
+            <weight>1.0</weight>
+            <schedulingPolicy>drf</schedulingPolicy>
+            <aclSubmitApps>*</aclSubmitApps>
+            <aclAdministerApps>*</aclAdministerApps>
+        </queue>
+    </queue>
+    <defaultQueueSchedulingPolicy>drf</defaultQueueSchedulingPolicy>
+    <queuePlacementPolicy>
+        <rule name="specified" create="true"/>
+        <rule name="user" create="true"/>
+    </queuePlacementPolicy>
 </allocations>
 
