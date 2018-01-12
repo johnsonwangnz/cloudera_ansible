@@ -77,7 +77,7 @@
   roles:
     - cdh_hadoop_hdfs_journalnode
 
-- hosts: resourcemanager
+- hosts: resourcemanagers
   user: ansibler
   become: true
   roles:

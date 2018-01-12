@@ -51,7 +51,7 @@
   tags:
     - restartallservices
 
-- hosts: resourcemanager
+- hosts: resourcemanagers
   user: ansibler
   become: true
   tasks:

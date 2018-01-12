@@ -23,7 +23,7 @@
   tags: hadoop
 
 - name: create gc log file  /var/log/hadoop-hdfs/hadoop-hdfs-gc.log
-  file: path=/var/log/hadoop-hdfs/hadoop-hdfs-gc.log owner=root group=root mode=0755 
+  file: path=/var/log/hadoop-hdfs/hadoop-hdfs-gc.log owner=root group=root mode=0777 
   tags: hadoop
 
 - name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
