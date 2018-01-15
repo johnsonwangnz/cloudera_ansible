@@ -143,6 +143,13 @@
         - hbase
         - hive
 
+- hosts: primarynamenode
+  user: ansibler
+  become: true
+  tasks:
+    - name: restart hadoop-hdfs-namenode when namenode was just formated for second namenode provision
+      service: name=hadoop-hdfs-namenode state=restarted
+
 
 # create /data folder on second namenode and format it with bootstrapStandby
 

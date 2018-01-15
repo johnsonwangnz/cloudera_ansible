@@ -11,7 +11,7 @@
 # (a) security is compromised or (b) we hand over control of an instance to a client.
 
 - hosts: all
-  sudo: true
+  become: true
   tasks:
     - name: hostname should match inventory name
       hostname: name={{ inventory_hostname }}
@@ -24,7 +24,7 @@
     - debug: var=ansibler
     - debug: var=groups['all']
 
-    - name: add 'ansibler' RSA SSH key
+    - name: add 'ansibler' RSA SSH key, ansibler is the user used by site.yml, it needs to be accessed with nopassword,adding the user to sudo group and make it nopassword is not engough, keys need to be placed in authorized_key file
       authorized_key: 
         user: ansibler 
         key: "{{ ansibler.ssh_public_key }}"
