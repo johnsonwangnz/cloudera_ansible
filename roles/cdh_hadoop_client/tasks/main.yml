@@ -1,0 +1,7 @@
+---
+# file: roles/cdh_hadoop_client/tasks/main.yml
+
+- name: install hadoop-client via apt, must turn on  allow_unauthenticated for u16
+  apt: name=hadoop-client allow_unauthenticated=yes
+  tags: hadoop
+

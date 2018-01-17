@@ -58,7 +58,7 @@
 
 # Add cdh repo and key
 
-- hosts: hdnodes
+- hosts: hdnodes:hdclients
   user: ansibler
   become: true
   roles:
@@ -116,8 +116,15 @@
     - cdh_hadoop_mapreduce_historyserver
     - cdh_hadoop_yarn_proxyserver
 
+- hosts: hdclients
+  user: ansibler
+  become: true
+  roles:
+    - cdh_hadoop_client
+ 
+
 # config all hadoop components 
-- hosts: hdnodes
+- hosts: hdnodes:hdclients
   user: ansibler
   become: true
   roles:
