@@ -1,0 +1,6 @@
+---
+# file: roles/ganglia_gmetad/handlers/main.yml
+
+- name: restart gmetad
+  service: name=gmetad state=restarted
+

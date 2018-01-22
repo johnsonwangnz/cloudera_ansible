@@ -1,0 +1,11 @@
+---
+# file: roles/ganglia_metad/tasks/main.yml
+
+- name: install Ganglia meta deamon  via apt
+  apt: name=gmetad
+
+
+- name: configure gmetad.conf in /etc/ganglia/gmetad.conf
+  template: src=gmetad.conf dest=/etc/ganglia/gmetad.conf owner=root group=root mode=0644
+  notify:
+    - restart gmetad

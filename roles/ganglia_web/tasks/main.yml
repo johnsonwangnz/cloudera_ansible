@@ -1,0 +1,12 @@
+---
+- name: install Ganglia Web
+  apt: name=ganglia-webfrontend state=latest
+
+- name: config apache2 to host ganglia web
+  file: 
+    src: /etc/ganglia-webfrontend/apache.conf 
+    dest: /etc/apache2/sites-enabled/001-ganglia.conf
+    state: link
+  notify:
+    - restart httpd
+

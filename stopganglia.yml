@@ -1,0 +1,25 @@
+---
+# Stop Ganglia services
+# ==================
+
+- hosts: gmreceiver:gmsenders
+  user: ansibler
+  become: true
+  tasks:
+    - name: stop ganglia monitors
+      service: name=ganglia-monitor state=stopped
+
+- hosts: gmserver
+  user: ansibler
+  become: true
+  tasks:
+    - name: stop ganglia gmetad
+      service: name=gmetad state=stopped
+
+    - name: stop web server
+      service: name=apache2 state=stopped
+
+
+
+
+

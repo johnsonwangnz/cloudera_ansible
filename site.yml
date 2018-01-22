@@ -8,6 +8,10 @@
     - name: determinei network interface
       set_fact: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
       # eg. to use a eth1: ipv4_address="{{ hostvars[inventory_hostname].ansible_eth1.ipv4.address }}"
+      # all tags the uses ipv4_address will need to run this as well, otherwise ipv4 address might be using 10.0....
+  tags:
+    - ganglia
+    - kibana
 
 # cluster cross cutting components
 
@@ -16,8 +20,6 @@
   become: true
   roles:
     - common
-    # ganglia_monitor is not working at moment
-    #- ganglia_monitor
 
 
 - hosts: all
@@ -53,6 +55,25 @@
   become: true
   roles:
     - td_agent
+
+# install Ganglia
+- hosts: gmserver
+  user: ansibler
+  become: true
+  roles:
+    - ganglia_web
+    - ganglia_gmetad
+  tags:
+    - ganglia
+
+- hosts: gmreceiver:gmsenders
+  user: ansibler
+  become: true
+  roles:
+    - ganglia_monitor
+  tags:
+    - ganglia
+
 
 # Hadoop
 

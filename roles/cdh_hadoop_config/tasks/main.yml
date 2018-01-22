@@ -31,7 +31,7 @@
   with_items:
     - core-site.xml
     - hadoop-env.sh
-   # - hadoop-metrics2.properties
+    - hadoop-metrics2.properties
     - hdfs-site.xml
    # - org-xerial-snappy.properties
     - slaves

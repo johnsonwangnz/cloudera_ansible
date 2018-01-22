@@ -1,0 +1,26 @@
+---
+# Start Ganglia services
+# ==================
+
+- hosts: gmreceiver:gmsenders
+  user: ansibler
+  become: true
+  tasks:
+    - name: start ganglia monitors
+      service: name=ganglia-monitor state=started
+
+- hosts: gmserver
+  user: ansibler
+  become: true
+  tasks:
+    - name: start ganglia gmetad
+      service: name=gmetad state=started
+
+    - name: start web server
+      service: name=apache2 state=started
+
+
+
+
+
+

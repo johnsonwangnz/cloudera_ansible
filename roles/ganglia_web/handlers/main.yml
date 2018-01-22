@@ -1,0 +1,6 @@
+---
+# file: roles/ganglia_web/handlers/main.yml
+
+- name: restart httpd
+  service: name=apache2 state=restarted enabled=yes
+
