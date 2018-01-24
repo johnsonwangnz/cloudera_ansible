@@ -1,0 +1,24 @@
+---
+# Stop  prometheus services
+# ==================
+
+- hosts: prometheus
+  user: ansibler
+  become: true
+  tasks:
+    - name: stop node_exporter
+      service: name=node_exporter state=stopped
+
+- hosts: prometheus
+  user: ansibler
+  become: true
+  tasks:
+    - name: stop prometheus
+      service: name=prometheus state=stopped
+
+
+
+
+
+
+

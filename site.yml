@@ -74,6 +74,15 @@
   tags:
     - ganglia
 
+# install Prometheus
+- hosts: prometheus
+  user: ansibler
+  become: true
+  roles:
+    - prometheus
+  tags:
+    - prometheus
+
 
 # Hadoop
 

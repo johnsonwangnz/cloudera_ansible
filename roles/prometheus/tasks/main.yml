@@ -1,0 +1,112 @@
+---
+# file: roles/prometheus/tasks/main.yml
+
+- name: create user 'prometheus'
+  user: name=prometheus createhome=no shell=/bin/false 
+
+- name: register prometheus_already_installed 
+  stat: path=/etc/prometheus
+  register: prometheus_already_installed
+
+
+- name: create folders for prometheus installation, etc for configuration and var/lib/ for data
+  file: path={{ item }} owner=prometheus group=prometheus state=directory
+  with_items:
+    - /etc/prometheus
+    - /var/lib/prometheus
+  when: prometheus_already_installed.stat.exists == False
+
+- name: downdload and tar prometheus
+  shell: | 
+         curl -LO https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+         tar xvf prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+         cp prometheus-{{ prometheus_version }}.linux-amd64/prometheus /usr/local/bin/
+         cp prometheus-{{ prometheus_version }}.linux-amd64/promtool /usr/local/bin/
+  when:  prometheus_already_installed.stat.exists == False
+
+- name: register prometheus file existence
+  stat: path=prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+  register: prometheus_tar_gz
+  
+
+- name: change ownership of prometheus executive files
+  file: path={{ item }} owner=prometheus group=prometheus state=file
+  with_items:
+    - /usr/local/bin/prometheus
+    - /usr/local/bin/promtool
+  when: prometheus_tar_gz.stat.exists == True
+
+
+- name: Copy consoles and console_libraries to /etc/prometheus
+  shell: src={{ item }} dest=/etc/prometheus recurse=yes
+  with_items:
+    - prometheus-{{ prometheus_version }}.linux-amd64/consoles
+    - prometheus-{{ prometheus_version }}.linux-amd64/console_libraries
+  when: prometheus_tar_gz.stat.exists == True
+
+
+- name: change ownership of prometheus etc folder
+  file: path={{ item }} owner=prometheus group=prometheus state=directory recurse=yes
+  with_items:
+    - /etc/prometheus/consoles
+    - /etc/prometheus/console_libraries
+  when: prometheus_tar_gz.stat.exists == True
+
+
+- name: remove leftover files
+  file: path={{ item }} state=absent 
+  with_items:
+    - prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+    - prometheus-{{ prometheus_version }}.linux-amd64
+  when: prometheus_tar_gz.stat.exists == True
+
+
+- name: config service file for prometheus
+  template: src=prometheus.service dest=/etc/systemd/system/prometheus.service owner=root group=root mode=0644
+  notify:
+    - reload daemon
+
+- name: config prometheus
+  template: src=prometheus.yml dest=/etc/prometheus/prometheus.yml owner=prometheus group=prometheus mode=0644
+  notify:
+    - restart prometheus
+
+
+# example: install node_exporter so that prometheus can monitor system like cpu, memory and disk
+
+- name: create user 'node_exporter'
+  user: name=node_exporter createhome=no shell=/bin/false
+
+
+- name: download and unpack node_exporter
+  unarchive: 
+    creates: /usr/local/bin/node_exporter
+    src: https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz
+    remote_src: yes
+    dest: /usr/local/bin
+    list_files: yes 
+  register: archive_contents
+
+
+- name: remove the first folder of unarchive
+  command: "{{ item }}"
+  with_items:
+    - mv /usr/local/bin/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter /usr/local/bin/node_exporter
+    - rm -r /usr/local/bin/node_exporter-{{ node_exporter_version }}.linux-amd64
+  when: (archive_contents.files is defined) and (archive_contents.files|length >0)
+ 
+
+- name: change ownership of node_exporter executive files
+  file: path=/usr/local/bin/node_exporter owner=node_exporter group=node_exporter state=file
+
+# no need to config node_exporter, it is configured through arguments the service is started for node_exporter
+- name: config service file for node_exporter
+  template: src=node_exporter.service dest=/etc/systemd/system/node_exporter.service owner=root group=root mode=0644
+  notify:
+    - reload daemon
+    - restart node_exporter
+
+
+
+
+   

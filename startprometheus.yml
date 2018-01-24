@@ -1,0 +1,23 @@
+---
+# Start  prometheus services
+# ==================
+
+- hosts: prometheus
+  user: ansibler
+  become: true
+  tasks:
+    - name: start node_exporter
+      service: name=node_exporter state=started
+
+- hosts: prometheus
+  user: ansibler
+  become: true
+  tasks:
+    - name: start prometheus
+      service: name=prometheus state=started
+
+
+
+
+
+
