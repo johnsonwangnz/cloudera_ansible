@@ -1,0 +1,16 @@
+---
+# file: roles/grafana/tasks/main.yml
+
+
+- name: add Grafana key
+  apt_key: url=https://packagecloud.io/gpg.key
+
+- name: add Grafana repository
+  apt_repository: state=present repo="deb https://packagecloud.io/grafana/stable/debian/ stretch main"
+
+- name: install grafana 
+  apt: name=grafana  update_cache=yes 
+  notify:
+    - restart grafana
+
+ 

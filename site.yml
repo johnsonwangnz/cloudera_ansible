@@ -83,6 +83,16 @@
   tags:
     - prometheus
 
+# install Grafana
+- hosts: grafana
+  user: ansibler
+  become: true
+  roles:
+    - grafana
+  tags:
+    - grafana
+
+
 
 # Hadoop
 
