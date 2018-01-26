@@ -15,4 +15,8 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9100']
 
-
+# scrape jmx_exporter_hadoop 
+  - job_name: 'hadoop_jmx'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [{% for host in groups["hdnodes"] %}'{{ host }}:{{ jmx_prometheus_exporter_port }}'{% if not loop.last %},{% endif %}{% endfor %}]

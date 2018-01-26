@@ -26,6 +26,16 @@
   file: path=/var/log/hadoop-hdfs/hadoop-hdfs-gc.log owner=root group=root mode=0777 state=touch 
   tags: hadoop
 
+- name: create /usr/lib/jmx-exporter folder
+  file: path=/usr/lib/jmx-exporter state=directory owner=root group=root mode=0755
+
+- name: download jmx_prometheus_javaagent exporter 
+  get_url: url=https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{jmx_prometheus_javaagent_version}}/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar dest=/usr/lib/jmx-exporter/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar owner=root group=root mode=0755
+ 
+- name: config jmx_prometheus_javaagent yaml file
+  template: src=jmx_prometheus_hadoop_config.yml dest=/usr/lib/jmx-exporter/jmx_prometheus_hadoop_config.yml owner=root group=root mode=0644
+
+
 - name: configure hadoop in /etc/hadoop/conf.{{ site_name|lower }}
   template: src={{ item }} dest=/etc/hadoop/conf.{{ site_name|lower }}/{{ item }} owner=root group=root mode=0644
   with_items:
@@ -38,6 +48,7 @@
     - mapred-site.xml
     - yarn-site.xml
     - fair-scheduler.xml
+    - yarn-env.sh
   notify:
     - restart hadoop-hdfs-namenode
     - restart hadoop-hdfs-journalnode
