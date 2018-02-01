@@ -19,4 +19,11 @@ scrape_configs:
   - job_name: 'hadoop_jmx'
     scrape_interval: 5s
     static_configs:
-      - targets: [{% for host in groups["hdnodes"] %}'{{ host }}:{{ jmx_prometheus_exporter_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
+      - targets: [{% for host in groups["namenodes"]|union(groups["datanodes"])  %}'{{ host }}:{{ jmx_prometheus_exporter_hadoop_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
+
+# scrape jmx_exporter_yarn
+  - job_name: 'yarn_jmx'
+    scrape_interval: 5s
+    static_configs:
+      - targets: [{% for host in groups["resourcemanagers"]|union(groups["nodemanagers"]) %}'{{ host }}:{{ jmx_prometheus_exporter_yarn_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
+

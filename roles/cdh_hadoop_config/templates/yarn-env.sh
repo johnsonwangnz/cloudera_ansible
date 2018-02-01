@@ -66,7 +66,7 @@ fi
 # Specify the JVM options to be used when starting the ResourceManager.
 # These options will be appended to the options specified as YARN_OPTS
 # and therefore may override any similar flags set in YARN_OPTS
-export YARN_RESOURCEMANAGER_OPTS="-javaagent:/usr/lib/jmx-exporter/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar={{jmx_prometheus_exporter_port}}:/usr/lib/jmx-exporter/jmx_prometheus_hadoop_config.yml"
+export YARN_RESOURCEMANAGER_OPTS="-javaagent:/usr/lib/jmx-exporter/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar={{jmx_prometheus_exporter_yarn_port}}:/usr/lib/jmx-exporter/jmx_prometheus_hadoop_config.yml"
 
 # Node Manager specific parameters
 
@@ -82,7 +82,7 @@ export YARN_RESOURCEMANAGER_OPTS="-javaagent:/usr/lib/jmx-exporter/jmx_prometheu
 # Specify the JVM options to be used when starting the NodeManager.
 # These options will be appended to the options specified as YARN_OPTS
 # and therefore may override any similar flags set in YARN_OPTS
-export YARN_NODEMANAGER_OPTS="-javaagent:/usr/lib/jmx-exporter/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar={{jmx_prometheus_exporter_port}}:/usr/lib/jmx-exporter/jmx_prometheus_hadoop_config.yml"
+export YARN_NODEMANAGER_OPTS="-javaagent:/usr/lib/jmx-exporter/jmx_prometheus_javaagent-{{jmx_prometheus_javaagent_version}}.jar={{jmx_prometheus_exporter_yarn_port}}:/usr/lib/jmx-exporter/jmx_prometheus_hadoop_config.yml"
 
 # so that filenames w/ spaces are handled correctly in loops below
 IFS=

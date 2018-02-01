@@ -1,19 +1,26 @@
 ---
 startDelaySeconds: 0
-#hostPort: 127.0.0.1:{{jmx_prometheus_exporter_port}}
-#jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:{{jmx_prometheus_exporter_port}}/jmxrmi
+#hostPort: 127.0.0.1:jmx_prometheus_exporter_port
+#jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:jmx_prometheus_exporter_port/jmxrmi
 ssl: false
 lowercaseOutputName: false
 lowercaseOutputLabelNames: false
 #whitelistObjectNames: ["org.apache.hadoop.metrics2:*"]
 #blacklistObjectNames: ["org.apache.hadoop.metrics2:type=ColumnFamily,*"]
 rules:
-  - pattern: 'org.apache.hadoop.metrics2<type=(\w+), name=(\w+)><>Value: (\d+)'
-    name: hadoop_$1_$2
-    value: $3
+  # example for name node metrics
+  - pattern: 'Hadoop<service=NameNode, name=FSNamesystem><>CapacityTotalGB'
+    name: hadoop_namenode_capacitytotalgb
+  # example for data node metrics
+  - pattern: 'Hadoop<service=DataNode, name=FSDatasetState-([\w]{8}(-[\w]{4}){3}-[\w]{12})><>Remaining'
+    name: hadoop_namenode_remaininggb
     valueFactor: 0.001
-    labels: {}
-    help: "hadoop metrics2 $1 $2"
-    type: GAUGE
-    attrNameSnakeCase: false
+    labels:
+      datanodeuuid: $1
+  # example for resource manager metrics
+  - pattern: 'Hadoop<service=ResourceManager, name=ClusterMetrics><>NumActiveNMs'
+    name: hadoop_resourcemanager_numActivenms
+  # example for node manager metrics 
+  - pattern: 'Hadoop<service=NodeManager, name=NodeManagerMetrics><>AvailableGB'
+    name: hadoop_nodemanager_availablegb
 
