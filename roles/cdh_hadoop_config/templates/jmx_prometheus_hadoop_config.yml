@@ -13,7 +13,7 @@ rules:
     name: hadoop_namenode_capacitytotalgb
   # example for data node metrics
   - pattern: 'Hadoop<service=DataNode, name=FSDatasetState-([\w]{8}(-[\w]{4}){3}-[\w]{12})><>Remaining'
-    name: hadoop_namenode_remaininggb
+    name: hadoop_datanode_remaininggb
     valueFactor: 0.001
     labels:
       datanodeuuid: $1
