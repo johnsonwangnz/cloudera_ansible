@@ -1,0 +1,12 @@
+---
+# file: roles/cdh_spark/tasks/main.yml
+
+- name: install cdh spark on yarn via apt
+  apt: name={{ item }}
+  with_items:
+    - spark-core
+    - spark-python
+
+- name: config spark
+  template: src=spark-defaults.conf dest=/etc/spark/conf/spark-defaults.conf owner=root group=root mode=0644
+

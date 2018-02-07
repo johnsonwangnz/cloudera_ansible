@@ -252,6 +252,18 @@
         - hbase
         - hive
 
+# Create spark nodes and spark history server
+- hosts: hdnodes
+  user: ansibler
+  become: true
+  roles:
+    - cdh_spark
+
+- hosts: sparkhistoryserver
+  user: ansibler
+  become: true
+  roles:
+    - cdh_spark_history_server
 
 
 

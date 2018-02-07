@@ -1,0 +1,33 @@
+---
+# file: roles/cdh_spark_history_server/tasks/main.yml
+
+- name: install spark-history-server via apt
+  apt: name=spark-history-server
+
+- name: create variable to detect existence of /user/spark folder
+  become: true
+  become_user: hdfs
+  command: hadoop fs -ls /user/spark
+  # if exists, stdout will list dir contents, otherwise stderr will report with stdout empty
+  register: lsresult
+  ignore_errors: yes
+
+
+
+- name: create hdfs folders /user/spark/applicationHistory/ for spark_history_server
+  become: true
+  become_user: hdfs
+  command: "{{ item }}"
+  with_items:
+   - hadoop fs -mkdir /user/spark
+   - hadoop fs -mkdir /user/spark/applicationHistory
+   - hadoop fs -chown -R spark:spark /user/spark
+   - hadoop fs -chmod 1777 /user/spark/applicationHistory
+  notify:
+   - restart spark-history-server
+  when: lsresult.stdout == ""
+
+  
+    
+
+

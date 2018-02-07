@@ -1,0 +1,5 @@
+---
+# file: roles/cdh_spark_history_server/handlers/main.yml
+
+- name: restart spark-history-server
+  service: name=spark-history-server state=restarted
