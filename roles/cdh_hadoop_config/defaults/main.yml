@@ -10,7 +10,7 @@ max_xcievers: 4096
 # The Hadoop DataNode heap size
 heapsize: 12278
 
-jmx_prometheus_javaagent_version: 0.9
+#jmx_prometheus_javaagent_version: 0.9
 
 # this has been moved to group_vars/all as it is used cross roles
 #jmx_prometheus_exporter_port: 9101

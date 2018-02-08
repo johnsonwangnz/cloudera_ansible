@@ -3,8 +3,16 @@ site_name: myhd
 # IPv4 maximum transmission unit, 9216 is the maximum for Intel/Cisco hardware
 mtu: 9216
 
+jmx_prometheus_javaagent_version: 0.9
+
 jmx_prometheus_exporter_hadoop_port: 9101
 
 jmx_prometheus_exporter_yarn_port: 9102
+
+jmx_prometheus_exporter_spark_driver_port: 9103
+
+jmx_prometheus_exporter_spark_worker_port: 9104
+
+
 
 

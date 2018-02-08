@@ -27,3 +27,16 @@ scrape_configs:
     static_configs:
       - targets: [{% for host in groups["resourcemanagers"]|union(groups["nodemanagers"]) %}'{{ host }}:{{ jmx_prometheus_exporter_yarn_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
 
+# scrape jmx_exporter_spark_driver
+  - job_name: 'spark_driver_jmx'
+    scrape_interval: 10s
+    static_configs:
+      - targets: [{% for host in groups["hdnodes"] %}'{{ host }}:{{ jmx_prometheus_exporter_spark_driver_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
+
+# scrape jmx_exporter_spark_executor
+  - job_name: 'spark_executor_jmx'
+    scrape_interval: 10s
+    static_configs:
+      - targets: [{% for host in groups["hdnodes"] %}'{{ host }}:{{ jmx_prometheus_exporter_spark_worker_port }}'{% if not loop.last %},{% endif %}{% endfor %}]
+
+

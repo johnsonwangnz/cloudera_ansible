@@ -10,3 +10,10 @@
 - name: config spark
   template: src=spark-defaults.conf dest=/etc/spark/conf/spark-defaults.conf owner=root group=root mode=0644
 
+- name: config spark metrics
+  template: src=metrics.properties dest=/etc/spark/conf/metrics.properties owner=root group=root mode=0644
+
+- name: config prometheus jmx exporter config
+  template: src=jmx_prometheus_spark_config.yml dest=/usr/lib/jmx-exporter/jmx_prometheus_spark_config.yml owner=root group=root mode=0644
+
+
